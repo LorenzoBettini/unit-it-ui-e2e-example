@@ -17,6 +17,8 @@
     <junit.version>4.12</junit.version>
     <assertj.swing.version>3.9.2</assertj.swing.version>
     <mockito.version>2.28.2</mockito.version>
+    <mongo.driver.version>3.10.2</mongo.driver.version>
+    <mongo.java.server.version>1.16.0</mongo.java.server.version>
 
     <!-- Plugins versions -->
     <jacoco.version>0.8.4</jacoco.version>
@@ -34,6 +36,24 @@
 
   <dependencies>
     <dependency>
+      <groupId>org.mongodb</groupId>
+      <artifactId>mongo-java-driver</artifactId>
+      <version>${mongo.driver.version}</version>
+    </dependency>
+    <dependency>
+      <!-- required to see Mongo Java Driver logs -->
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <version>1.2.3</version>
+    </dependency>
+    <dependency>
+      <!-- Needed to avoid a false positive from SonarQube: https://jira.sonarsource.com/browse/SONARJAVA-2785 -->
+      <groupId>com.google.code.findbugs</groupId>
+      <artifactId>jsr305</artifactId>
+      <version>3.0.2</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>${junit.version}</version>
@@ -49,6 +69,12 @@
       <groupId>org.mockito</groupId>
       <artifactId>mockito-core</artifactId>
       <version>${mockito.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>de.bwaldvogel</groupId>
+      <artifactId>mongo-java-server</artifactId>
+      <version>${mongo.java.server.version}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
