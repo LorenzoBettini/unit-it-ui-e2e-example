@@ -44,8 +44,10 @@ public class StudentMongoRepository implements StudentRepository {
 
 	@Override
 	public void save(Student student) {
-		// TODO Auto-generated method stub
-		
+		studentCollection.insertOne(
+			new Document()
+				.append("id", student.getId())
+				.append("name", student.getName()));
 	}
 
 }
