@@ -90,6 +90,19 @@ public class StudentMongoRepositoryTest {
 			.isEqualTo(new Student("2", "test2"));
 	}
 
+	@Test
+	public void testSave() {
+		Student student = new Student("1", "added student");
+		studentRepository.save(student);
+		assertThat(studentCollection.find())
+			.hasSize(1)
+			.allMatch(
+				d ->
+					d.get("id").equals(student.getId()) &&
+					d.get("name").equals(student.getName())
+			);
+	}
+
 	private void addTestStudentToDatabase(String id, String name) {
 		studentCollection.insertOne(
 				new Document()
