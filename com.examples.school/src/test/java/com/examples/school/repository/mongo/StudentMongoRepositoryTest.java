@@ -1,5 +1,7 @@
 package com.examples.school.repository.mongo;
 
+import static org.assertj.core.api.Assertions.*;
+
 import java.net.InetSocketAddress;
 
 import org.bson.Document;
@@ -59,8 +61,7 @@ public class StudentMongoRepositoryTest {
 	}
 
 	@Test
-	public void test() {
-		// just to make sure we can start the Mongo Java server
-		// we'll remove it when we write the first real test
+	public void testFindAllWhenDatabaseIsEmpty() {
+		assertThat(studentRepository.findAll()).isEmpty();
 	}
 }
