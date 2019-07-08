@@ -12,9 +12,24 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
+
+    <!-- Dependencies versions -->
     <junit.version>4.12</junit.version>
     <assertj.swing.version>3.9.2</assertj.swing.version>
     <mockito.version>2.28.2</mockito.version>
+
+    <!-- Plugins versions -->
+    <jacoco.version>0.8.4</jacoco.version>
+    <sonar.version>3.6.0.1398</sonar.version>
+
+    <!-- For SonarQube -->
+    <sonar.coverage.jacoco.xmlReportPaths>
+      ${project.reporting.outputDirectory}/jacoco/jacoco.xml
+    </sonar.coverage.jacoco.xmlReportPaths>
+    <!-- Exclude non covered files -->
+    <sonar.coverage.exclusions>
+      **/model/*
+    </sonar.coverage.exclusions>
   </properties>
 
   <dependencies>
@@ -38,4 +53,50 @@
     </dependency>
   </dependencies>
 
+  <build>
+    <pluginManagement>
+      <plugins>
+        <!-- You must run sonar:sonar explicitly
+          Use profile "jacoco" to get code coverage -->
+        <plugin>
+          <groupId>org.sonarsource.scanner.maven</groupId>
+          <artifactId>sonar-maven-plugin</artifactId>
+          <version>${sonar.version}</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+
+  <profiles>
+    <profile>
+      <id>jacoco</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
+            <version>${jacoco.version}</version>
+            <configuration>
+              <excludes>
+                <exclude>**/model/*</exclude>
+              </excludes>
+            </configuration>
+            <executions>
+              <execution>
+                <goals>
+                  <!-- binds by default to the phase "initialize" -->
+                  <goal>prepare-agent</goal>
+                  <!-- binds by default to the phase "verify" -->
+                  <goal>report</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>

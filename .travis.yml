@@ -2,12 +2,19 @@ language: java
 
 jdk: openjdk8
 
+addons:
+  sonarcloud:
+    organization: lorenzobettini-github
+    token:
+      secure: $SONAR_TOKEN
+
 # skip installation step
 install: true
 
 cache:
-   directories:
-      - $HOME/.m2
+  directories:
+  - $HOME/.m2
+  - $HOME/.sonar/cache
 
 script:
-   - mvn -f com.examples.school/pom.xml clean verify
+  - mvn -f com.examples.school/pom.xml clean verify -Pjacoco sonar:sonar
