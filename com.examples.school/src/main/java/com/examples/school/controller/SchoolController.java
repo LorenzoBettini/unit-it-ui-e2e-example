@@ -19,6 +19,12 @@ public class SchoolController {
 	}
 
 	public void newStudent(Student student) {
+		final Student existingStudent = studentRepository.findById(student.getId());
+		if (existingStudent != null) {
+			studentView.showError("Already existing student with id "+
+					student.getId(), existingStudent);
+			return;
+		}
 		studentRepository.save(student);
 		studentView.studentAdded(student);
 	}
