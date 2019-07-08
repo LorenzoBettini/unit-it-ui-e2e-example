@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.InOrder;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -39,5 +40,14 @@ public class SchoolControllerTest {
 		schoolController.allStudents();
 		verify(studentView)
 			.showAllStudents(students);
+	}
+
+	@Test
+	public void testNewStudentWhenStudentDoesNotAlreadyExist() {
+		Student student = new Student("1", "test");
+		schoolController.newStudent(student);
+		InOrder inOrder = inOrder(studentRepository, studentView);
+		inOrder.verify(studentRepository).save(student);
+		inOrder.verify(studentView).studentAdded(student);
 	}
 }
