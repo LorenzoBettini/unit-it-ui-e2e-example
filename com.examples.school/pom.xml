@@ -25,6 +25,8 @@
     <jacoco.version>0.8.4</jacoco.version>
     <sonar.version>3.6.0.1398</sonar.version>
     <build.helper.version>3.0.0</build.helper.version>
+    <surefire.version>2.22.2</surefire.version>
+    <failsafe.version>2.22.2</failsafe.version>
 
     <!-- For SonarQube -->
     <sonar.coverage.jacoco.xmlReportPaths>
@@ -34,6 +36,11 @@
     <sonar.coverage.exclusions>
       **/model/*
     </sonar.coverage.exclusions>
+    <!-- Also collects integration tests -->
+    <sonar.junit.reportPaths>
+      ${project.build.directory}/surefire-reports,
+      ${project.build.directory}/failsafe-reports
+    </sonar.junit.reportPaths>
   </properties>
 
   <dependencies>
@@ -108,6 +115,19 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <version>${failsafe.version}</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>integration-test</goal>
+              <goal>verify</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
     <pluginManagement>
       <plugins>
@@ -138,6 +158,9 @@
               <excludes>
                 <exclude>**/model/*</exclude>
               </excludes>
+              <!-- Don't use the default property so that we'll do code 
+                coverage only for surefire tests (not for failsafe) -->
+              <propertyName>surefireArgLine</propertyName>
             </configuration>
             <executions>
               <execution>
@@ -149,6 +172,15 @@
                 </goals>
               </execution>
             </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <version>${surefire.version}</version>
+            <configuration>
+              <!-- Code coverage for surefire tests -->
+              <argLine>${surefireArgLine}</argLine>
+            </configuration>
           </plugin>
         </plugins>
       </build>
