@@ -19,10 +19,15 @@
     <mockito.version>2.28.2</mockito.version>
     <mongo.driver.version>3.10.2</mongo.driver.version>
     <mongo.java.server.version>1.16.0</mongo.java.server.version>
+    <testcontainers.version>1.11.3</testcontainers.version>
 
     <!-- Plugins versions -->
     <jacoco.version>0.8.4</jacoco.version>
     <sonar.version>3.6.0.1398</sonar.version>
+    <build.helper.version>3.0.0</build.helper.version>
+    <surefire.version>2.22.2</surefire.version>
+    <failsafe.version>2.22.2</failsafe.version>
+    <docker.frabric8.version>0.30.0</docker.frabric8.version>
 
     <!-- For SonarQube -->
     <sonar.coverage.jacoco.xmlReportPaths>
@@ -32,6 +37,11 @@
     <sonar.coverage.exclusions>
       **/model/*
     </sonar.coverage.exclusions>
+    <!-- Also collects integration tests -->
+    <sonar.junit.reportPaths>
+      ${project.build.directory}/surefire-reports,
+      ${project.build.directory}/failsafe-reports
+    </sonar.junit.reportPaths>
   </properties>
 
   <dependencies>
@@ -77,9 +87,82 @@
       <version>${mongo.java.server.version}</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.testcontainers</groupId>
+      <artifactId>testcontainers</artifactId>
+      <version>${testcontainers.version}</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <version>${build.helper.version}</version>
+        <executions>
+          <execution>
+            <id>add-test-source</id>
+            <phase>generate-test-sources</phase>
+            <goals>
+              <goal>add-test-source</goal>
+            </goals>
+            <configuration>
+              <sources>
+                <source>src/it/java</source>
+              </sources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <version>${failsafe.version}</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>integration-test</goal>
+              <goal>verify</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>io.fabric8</groupId>
+        <artifactId>docker-maven-plugin</artifactId>
+        <version>${docker.frabric8.version}</version>
+        <configuration>
+          <images>
+            <image>
+              <name>mongo:4.0.5</name>
+              <run>
+                <ports>
+                  <port>27017:27017</port>
+                </ports>
+              </run>
+            </image>
+          </images>
+        </configuration>
+        <executions>
+          <execution>
+            <id>docker:start</id>
+            <phase>pre-integration-test</phase>
+            <goals>
+              <goal>start</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>docker:stop</id>
+            <phase>post-integration-test</phase>
+            <goals>
+              <goal>stop</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
     <pluginManagement>
       <plugins>
         <!-- You must run sonar:sonar explicitly
@@ -109,6 +192,9 @@
               <excludes>
                 <exclude>**/model/*</exclude>
               </excludes>
+              <!-- Don't use the default property so that we'll do code 
+                coverage only for surefire tests (not for failsafe) -->
+              <propertyName>surefireArgLine</propertyName>
             </configuration>
             <executions>
               <execution>
@@ -120,6 +206,15 @@
                 </goals>
               </execution>
             </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <version>${surefire.version}</version>
+            <configuration>
+              <!-- Code coverage for surefire tests -->
+              <argLine>${surefireArgLine}</argLine>
+            </configuration>
           </plugin>
         </plugins>
       </build>
