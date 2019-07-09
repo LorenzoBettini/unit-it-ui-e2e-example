@@ -37,7 +37,7 @@ public class StudentSwingView extends JFrame implements StudentView {
 	private JScrollPane scrollPane;
 	private JLabel lblErrorMessage;
 
-	private SchoolController schoolController;
+	private transient SchoolController schoolController;
 
 	public void setSchoolController(SchoolController schoolController) {
 		this.schoolController = schoolController;
