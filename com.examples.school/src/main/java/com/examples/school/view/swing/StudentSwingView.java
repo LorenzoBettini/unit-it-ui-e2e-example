@@ -14,10 +14,14 @@ import com.examples.school.model.Student;
 import com.examples.school.view.StudentView;
 import javax.swing.JTextField;
 import java.awt.Insets;
+
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
+
 import java.awt.Color;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -30,7 +34,8 @@ public class StudentSwingView extends JFrame implements StudentView {
 	private JTextField txtId;
 	private JTextField txtName;
 	private JButton btnAdd;
-	private JList listStudents;
+	private JList<Student> listStudents;
+	private DefaultListModel<Student> listStudentsModel;
 	private JScrollPane scrollPane;
 	private JLabel lblErrorMessage;
 
@@ -132,7 +137,8 @@ public class StudentSwingView extends JFrame implements StudentView {
 		gbc_scrollPane.gridy = 3;
 		contentPane.add(scrollPane, gbc_scrollPane);
 		
-		listStudents = new JList();
+		listStudentsModel = new DefaultListModel<>();
+		listStudents = new JList<>(listStudentsModel);
 		listStudents.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		listStudents.setName("studentList");
 		scrollPane.setViewportView(listStudents);
@@ -150,8 +156,9 @@ public class StudentSwingView extends JFrame implements StudentView {
 
 	@Override
 	public void showAllStudents(List<Student> students) {
-		// TODO Auto-generated method stub
-		
+		SwingUtilities.invokeLater(() ->
+			students.stream().forEach(listStudentsModel::addElement)
+		);
 	}
 
 	@Override
