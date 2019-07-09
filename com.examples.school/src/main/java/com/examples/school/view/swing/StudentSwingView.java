@@ -26,8 +26,6 @@ import javax.swing.SwingUtilities;
 import java.awt.Color;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 
 public class StudentSwingView extends JFrame implements StudentView {
 
@@ -129,12 +127,8 @@ public class StudentSwingView extends JFrame implements StudentView {
 		txtName.setColumns(10);
 		
 		btnAdd = new JButton("Add");
-		btnAdd.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				schoolController.newStudent(
-					new Student(txtId.getText(), txtName.getText()));
-			}
-		});
+		btnAdd.addActionListener(e -> schoolController.newStudent(
+			new Student(txtId.getText(), txtName.getText())));
 		btnAdd.setEnabled(false);
 		GridBagConstraints gbc_btnAdd = new GridBagConstraints();
 		gbc_btnAdd.insets = new Insets(0, 0, 5, 0);
