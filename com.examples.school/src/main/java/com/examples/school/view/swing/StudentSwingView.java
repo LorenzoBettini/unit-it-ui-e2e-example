@@ -19,6 +19,8 @@ import javax.swing.JList;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 import java.awt.Color;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 public class StudentSwingView extends JFrame implements StudentView {
 
@@ -75,6 +77,15 @@ public class StudentSwingView extends JFrame implements StudentView {
 		contentPane.add(lblId, gbc_lblId);
 		
 		txtId = new JTextField();
+		final KeyAdapter btnAddEnabler = new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				btnAdd.setEnabled(
+					!txtId.getText().isEmpty() &&
+					!txtName.getText().isEmpty());
+			}
+		};
+		txtId.addKeyListener(btnAddEnabler);
 		txtId.setName("idTextBox");
 		GridBagConstraints gbc_idTextField = new GridBagConstraints();
 		gbc_idTextField.insets = new Insets(0, 0, 5, 0);
@@ -93,6 +104,7 @@ public class StudentSwingView extends JFrame implements StudentView {
 		contentPane.add(lblName, gbc_lblName);
 		
 		txtName = new JTextField();
+		txtName.addKeyListener(btnAddEnabler);
 		txtName.setName("nameTextBox");
 		GridBagConstraints gbc_nameTextField = new GridBagConstraints();
 		gbc_nameTextField.insets = new Insets(0, 0, 5, 0);
