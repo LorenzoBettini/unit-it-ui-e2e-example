@@ -36,7 +36,8 @@
     </sonar.coverage.jacoco.xmlReportPaths>
     <!-- Exclude non covered files -->
     <sonar.coverage.exclusions>
-      **/model/*
+      **/model/*,
+      **/SchoolSwingApp.*
     </sonar.coverage.exclusions>
     <!-- Also collects integration tests -->
     <sonar.junit.reportPaths>
@@ -241,6 +242,7 @@
             <configuration>
               <excludes>
                 <exclude>**/model/*</exclude>
+                <exclude>**/SchoolSwingApp.*</exclude>
               </excludes>
               <!-- Don't use the default property so that we'll do code 
                 coverage only for surefire tests (not for failsafe) -->
