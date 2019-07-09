@@ -1,6 +1,7 @@
 package com.examples.school.view.swing;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 import java.util.Arrays;
 
@@ -14,8 +15,10 @@ import org.assertj.swing.junit.runner.GUITestRunner;
 import org.assertj.swing.junit.testcase.AssertJSwingJUnitTestCase;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import com.examples.school.controller.SchoolController;
 import com.examples.school.model.Student;
 
 @RunWith(GUITestRunner.class)
@@ -25,11 +28,15 @@ public class StudentSwingViewTest extends AssertJSwingJUnitTestCase {
 
 	private StudentSwingView studentSwingView;
 
+	@Mock
+	private SchoolController schoolController;
+
 	@Override
 	protected void onSetUp() {
 		MockitoAnnotations.initMocks(this);
 		GuiActionRunner.execute(() -> {
 			studentSwingView = new StudentSwingView();
+			studentSwingView.setSchoolController(schoolController);
 			return studentSwingView;
 		});
 		window = new FrameFixture(robot(), studentSwingView);
@@ -105,4 +112,14 @@ public class StudentSwingViewTest extends AssertJSwingJUnitTestCase {
 		window.label("errorMessageLabel").requireText(" ");
 	}
 
+	@Test
+	public void testAddButtonShouldDelegateToSchoolControllerNewStudent() {
+		// setup
+		window.textBox("idTextBox").enterText("1");
+		window.textBox("nameTextBox").enterText("test");
+		// exercise
+		window.button(JButtonMatcher.withText("Add")).click();
+		// verify
+		verify(schoolController).newStudent(new Student("1", "test"));
+	}
 }
