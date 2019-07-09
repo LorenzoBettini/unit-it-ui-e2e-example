@@ -10,6 +10,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import com.examples.school.controller.SchoolController;
 import com.examples.school.model.Student;
 import com.examples.school.view.StudentView;
 import javax.swing.JTextField;
@@ -25,6 +26,8 @@ import javax.swing.SwingUtilities;
 import java.awt.Color;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class StudentSwingView extends JFrame implements StudentView {
 
@@ -38,6 +41,8 @@ public class StudentSwingView extends JFrame implements StudentView {
 	private DefaultListModel<Student> listStudentsModel;
 	private JScrollPane scrollPane;
 	private JLabel lblErrorMessage;
+
+	private SchoolController schoolController;
 
 	/**
 	 * Launch the application.
@@ -54,6 +59,10 @@ public class StudentSwingView extends JFrame implements StudentView {
 				}
 			}
 		});
+	}
+
+	public void setSchoolController(SchoolController schoolController) {
+		this.schoolController = schoolController;
 	}
 
 	/**
@@ -120,6 +129,12 @@ public class StudentSwingView extends JFrame implements StudentView {
 		txtName.setColumns(10);
 		
 		btnAdd = new JButton("Add");
+		btnAdd.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				schoolController.newStudent(
+					new Student(txtId.getText(), txtName.getText()));
+			}
+		});
 		btnAdd.setEnabled(false);
 		GridBagConstraints gbc_btnAdd = new GridBagConstraints();
 		gbc_btnAdd.insets = new Insets(0, 0, 5, 0);
