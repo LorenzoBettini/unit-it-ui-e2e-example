@@ -1,5 +1,7 @@
 package com.examples.school.view.swing;
 
+import org.assertj.swing.annotation.GUITest;
+import org.assertj.swing.core.matcher.JLabelMatcher;
 import org.assertj.swing.edt.GuiActionRunner;
 import org.assertj.swing.fixture.FrameFixture;
 import org.assertj.swing.junit.runner.GUITestRunner;
@@ -26,8 +28,10 @@ public class StudentSwingViewTest extends AssertJSwingJUnitTestCase {
 		window.show(); // shows the frame to test
 	}
 
-	@Test
-	public void test() {
-		// just to verify that the setup works
+	@Test @GUITest
+	public void testControlsInitialStates() {
+		window.label(JLabelMatcher.withText("id"));
+		window.textBox("idTextBox").requireEnabled();
 	}
+
 }
