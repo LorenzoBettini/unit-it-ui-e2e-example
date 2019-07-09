@@ -27,6 +27,7 @@
     <build.helper.version>3.0.0</build.helper.version>
     <surefire.version>2.22.2</surefire.version>
     <failsafe.version>2.22.2</failsafe.version>
+    <docker.frabric8.version>0.30.0</docker.frabric8.version>
 
     <!-- For SonarQube -->
     <sonar.coverage.jacoco.xmlReportPaths>
@@ -124,6 +125,39 @@
             <goals>
               <goal>integration-test</goal>
               <goal>verify</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>io.fabric8</groupId>
+        <artifactId>docker-maven-plugin</artifactId>
+        <version>${docker.frabric8.version}</version>
+        <configuration>
+          <images>
+            <image>
+              <name>mongo:4.0.5</name>
+              <run>
+                <ports>
+                  <port>27017:27017</port>
+                </ports>
+              </run>
+            </image>
+          </images>
+        </configuration>
+        <executions>
+          <execution>
+            <id>docker:start</id>
+            <phase>pre-integration-test</phase>
+            <goals>
+              <goal>start</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>docker:stop</id>
+            <phase>post-integration-test</phase>
+            <goals>
+              <goal>stop</goal>
             </goals>
           </execution>
         </executions>
