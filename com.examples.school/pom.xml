@@ -20,6 +20,7 @@
     <mongo.driver.version>3.10.2</mongo.driver.version>
     <mongo.java.server.version>1.16.0</mongo.java.server.version>
     <testcontainers.version>1.11.3</testcontainers.version>
+    <picocli.version>3.9.6</picocli.version>
 
     <!-- Plugins versions -->
     <jacoco.version>0.8.4</jacoco.version>
@@ -35,7 +36,8 @@
     </sonar.coverage.jacoco.xmlReportPaths>
     <!-- Exclude non covered files -->
     <sonar.coverage.exclusions>
-      **/model/*
+      **/model/*,
+      **/SchoolSwingApp.*
     </sonar.coverage.exclusions>
     <!-- Also collects integration tests -->
     <sonar.junit.reportPaths>
@@ -83,6 +85,11 @@
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
       <version>1.2.3</version>
+    </dependency>
+    <dependency>
+      <groupId>info.picocli</groupId>
+      <artifactId>picocli</artifactId>
+      <version>${picocli.version}</version>
     </dependency>
     <dependency>
       <!-- Needed to avoid a false positive from SonarQube: https://jira.sonarsource.com/browse/SONARJAVA-2785 -->
@@ -139,6 +146,7 @@
             <configuration>
               <sources>
                 <source>src/it/java</source>
+                <source>src/e2e/java</source>
               </sources>
             </configuration>
           </execution>
@@ -154,6 +162,21 @@
               <goal>integration-test</goal>
               <goal>verify</goal>
             </goals>
+          </execution>
+          <execution>
+            <id>e2e-tests</id>
+            <goals>
+              <goal>integration-test</goal>
+              <goal>verify</goal>
+            </goals>
+            <configuration>
+              <excludes>
+                <exclude>**/*IT.java</exclude>
+              </excludes>
+              <includes>
+                <include>**/*E2E.java</include>
+              </includes>
+            </configuration>
           </execution>
         </executions>
       </plugin>
@@ -219,6 +242,7 @@
             <configuration>
               <excludes>
                 <exclude>**/model/*</exclude>
+                <exclude>**/SchoolSwingApp.*</exclude>
               </excludes>
               <!-- Don't use the default property so that we'll do code 
                 coverage only for surefire tests (not for failsafe) -->
